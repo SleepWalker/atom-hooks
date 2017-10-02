@@ -1,0 +1,30 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "extends": "eslint:recommended",
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "globals": {
+    "atom": true
+  },
+  "overrides": [
+    {
+      "files": "**/*.test.js",
+      "env": {
+        "jest": true
+      }
+    }
+  ],
+  "rules": {
+    "indent": ["error", 2],
+    "no-console": "off"
+  }
+}

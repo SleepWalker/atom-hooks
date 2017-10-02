@@ -1,0 +1,29 @@
+{
+  "name": "atom-hooks",
+  "main": "./lib/atom-hooks",
+  "version": "0.0.0",
+  "description":
+    "Execute commands depending on file path and editor events (e.g. save)",
+  "keywords": [],
+  "activationCommands": {
+    "atom-workspace": "core:save"
+  },
+  "repository": "https://github.com/SleepWalker/atom-hooks",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "jest": {
+    "clearMocks": true
+  },
+  "dependencies": {
+    "minimatch": "3.0.4"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "babel-preset-env": "1.6.0",
+    "eslint": "4.7.1",
+    "jest": "21.2.1",
+    "prettier-eslint": "8.2.0"
+  }
+}
