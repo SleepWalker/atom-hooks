@@ -1,6 +1,6 @@
 'use babel';
 // @flow
-import Config from './Config';
+import Config from '../lib/Config';
 
 it('should normalize config', () => {
   const config = new Config();

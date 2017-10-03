@@ -1,8 +1,8 @@
 'use babel';
 // @flow
 import { exec } from 'child_process';
-import Runner from './Runner';
-import Config from './Config';
+import Runner from '../lib/Runner';
+import Config from '../lib/Config';
 
 jest.mock('child_process');
 

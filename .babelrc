@@ -8,7 +8,8 @@
           {
             "targets": {
               "node": "current"
-            }
+            },
+            "useBuiltIns": "usage"
           }
         ]
       ]
@@ -19,12 +20,13 @@
           "env",
           {
             "targets": {
-              "node": "current"
-            }
+              "node": "6.9.5"
+            },
+            "useBuiltIns": "usage"
           }
         ]
       ]
     }
   },
-  "plugins": ["transform-object-rest-spread"]
+  "plugins": ["transform-object-rest-spread", "transform-runtime"]
 }

@@ -15,6 +15,7 @@ export default function runTests({ logFile }) {
       { cwd: __dirname },
       error => {
         if (error) {
+          console.warn(error);
           resolve(1);
         } else {
           resolve(0);
