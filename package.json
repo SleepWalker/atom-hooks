@@ -22,6 +22,7 @@
     "release": "npm run test && rm -rf build && npm run build && git add build",
     "flow": "flow"
   },
+  "atomTestRunner": "./test-runner",
   "jest": {
     "clearMocks": true,
     "roots": [
