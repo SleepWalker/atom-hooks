@@ -2,6 +2,48 @@
 
 import Config from './Config';
 
+it('should normalize config', () => {
+  const config = new Config();
+
+  expect(config.normalize({
+    scripts: {
+      someScript: 'some script'
+    },
+    files: {
+      '*.js': {
+        onSave: 'someScript'
+      },
+      '**': {
+        onSave: {
+          '*.jsx': ['someScript', 'someScript'],
+          '*.scss': 'someScript'
+        },
+        manual: {
+          '*.js': 'someScript'
+        }
+      }
+    },
+    hooks: {
+      onSave: {
+        '**/*.jsx': 'hook command',
+        'bar/*.js': 'bar command',
+        '{foo, bar}/*.jpg': 'another command'
+      }
+    }
+  })).toEqual({
+    onSave: {
+      '**/*.jsx': ['hook command', 'some script', 'some script'],
+      'bar/*.js': ['bar command'],
+      '{foo, bar}/*.jpg': ['another command'],
+      '*.js': ['some script'],
+      '**/*.scss': ['some script']
+    },
+    manual: {
+      '**/*.js': ['some script']
+    }
+  });
+});
+
 it('should return command for hook', () => {
   const file = 'foo/bar.js';
   const hook = 'onSave';
@@ -147,6 +189,45 @@ it('should expand nested patterns', () => {
   expect(config.getCommands(file2, hook)).toEqual([expectedCommand]);
 });
 
+it('accepts path scoped configuration', () => {
+  const file1 = 'foo/bar.js';
+  const file2 = 'foo/baz.scss';
+  const file3 = 'foo/quz.jpg';
+  const expectedCommand = 'test command';
+  const config = new Config();
+
+  config.setConfig({
+    scripts: {
+      someScript: expectedCommand
+    },
+    files: {
+      '*.js': {
+        onSave: 'someScript'
+      },
+      '**': {
+        onSave: {
+          '*.jsx': ['someScript', 'someScript'],
+          '*.scss': 'someScript'
+        },
+        manual: {
+          '*.js': 'someScript'
+        }
+      }
+    },
+    hooks: {
+      onSave: {
+        'bar/*.js': 'bad command',
+        '{foo, bar}/*.jpg': expectedCommand
+      }
+    }
+  });
+
+  expect(config.getCommands(file1, 'onSave')).toEqual([]);
+  expect(config.getCommands(file1, 'manual')).toEqual([expectedCommand]);
+  expect(config.getCommands(file2, 'onSave')).toEqual([expectedCommand]);
+  expect(config.getCommands(file3, 'onSave')).toEqual([expectedCommand]);
+});
+
 it('should list hooks', () => {
   const file = 'foo/bar.js';
   const expectedCommands = ['test command', 'other command', 'command3'];
@@ -163,12 +244,12 @@ it('should list hooks', () => {
           '*.scss': 'someScript'
         }
       },
-      onDelete: {
+      manual: {
         '**': ['someScript', expectedCommands[1]],
         '**/*.js': expectedCommands[2]
       }
     }
   });
 
-  expect(config.listHooks(file)).toEqual([{ name: 'onSave', command: expectedCommands[0] }, { name: 'onDelete', command: expectedCommands[0] }, { name: 'onDelete', command: expectedCommands[1] }, { name: 'onDelete', command: expectedCommands[2] }]);
+  expect(config.listHooks(file)).toEqual([{ name: 'onSave', command: expectedCommands[0] }, { name: 'manual', command: expectedCommands[0] }, { name: 'manual', command: expectedCommands[1] }, { name: 'manual', command: expectedCommands[2] }]);
 });

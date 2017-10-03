@@ -81,12 +81,12 @@ export default {
   },
 
   onSaveFile(filePath) {
-    this.statusView.updateState('loading');
-
     this.processExecutionResult(this.runner.run(filePath, 'onSave'));
   },
 
   processExecutionResult(result) {
+    this.statusView.updateState('loading');
+
     return result.then(() => this.statusView.updateState('success')).catch(error => {
       this.statusView.updateState('fail');
       this.notifyError('Error executing onSave scripts', error);
