@@ -26,7 +26,8 @@
   "jest": {
     "clearMocks": true,
     "roots": [
-      "lib"
+      "lib",
+      "test"
     ]
   },
   "dependencies": {
