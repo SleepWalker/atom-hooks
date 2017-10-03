@@ -1,9 +1,8 @@
 {
   "name": "atom-hooks",
   "main": "./build/atom-hooks",
-  "version": "0.0.0",
-  "description":
-    "Execute commands depending on file path and editor events (e.g. save)",
+  "version": "0.1.0",
+  "description": "Execute commands depending on file path and editor events (e.g. save)",
   "keywords": [],
   "repository": "https://github.com/SleepWalker/atom-hooks",
   "license": "MIT",
@@ -20,13 +19,14 @@
   "scripts": {
     "build": "BABEL_ENV=atom babel lib --out-dir build",
     "test": "jest",
-    "release":
-      "npm run test && rm -rf build && npm run build && git add -f build",
+    "release": "npm run test && rm -rf build && npm run build && git add -f build",
     "flow": "flow"
   },
   "jest": {
     "clearMocks": true,
-    "roots": ["lib"]
+    "roots": [
+      "lib"
+    ]
   },
   "dependencies": {
     "atom-select-list": "0.3.2",
