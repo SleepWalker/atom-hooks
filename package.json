@@ -1,7 +1,7 @@
 {
   "name": "atom-hooks",
   "main": "./build/atom-hooks",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Execute commands depending on file path and editor events (e.g. save)",
   "keywords": [],
   "repository": "https://github.com/SleepWalker/atom-hooks",
