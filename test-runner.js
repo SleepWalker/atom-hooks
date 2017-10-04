@@ -1,26 +1,14 @@
 'use babel';
 
-import { exec } from 'child_process';
+import { runCLI } from 'jest-cli';
 
-export default function runTests({ logFile }) {
-  if (logFile) {
-    logFile = ` --outputFile='${logFile}'`;
-  } else {
-    logFile = '';
-  }
-
-  return new Promise(resolve => {
-    exec(
-      'npm t --silent -- --ci --json' + logFile,
-      { cwd: __dirname },
-      error => {
-        if (error) {
-          console.warn(error);
-          resolve(1);
-        } else {
-          resolve(0);
-        }
-      }
-    );
-  });
+export default function runTests({ logFile, testPaths }) {
+  return runCLI(
+    {
+      cache: false, // without this it will fail on oniguruma package (https://github.com/facebook/jest/issues/3552)
+      _: testPaths,
+      outputFile: logFile
+    },
+    [process.cwd()]
+  ).then(resp => (resp.results.success ? 0 : 1));
 }
