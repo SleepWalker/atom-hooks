@@ -19,7 +19,7 @@
   "scripts": {
     "build": "BABEL_ENV=atom babel lib --out-dir build",
     "test": "atom --test test",
-    "release": "npm run test && rm -rf build && npm run build && git add build",
+    "release": "npm run test && rm -rf build && npm run build && git add build -A",
     "flow": "flow"
   },
   "atomTestRunner": "./test-runner",
