@@ -1,6 +1,7 @@
 'use babel';
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+import _extends from 'babel-runtime/helpers/extends';
+import _Promise from 'babel-runtime/core-js/promise';
 
 import { parse as parsePath } from 'path';
 import { exec } from 'child_process';
@@ -31,7 +32,7 @@ export default class Runner {
     return commands.reduce((promise, command) => promise.then(() => this.execute(this.interpolate(command, vars), {
       cwd: vars.project,
       timeout: 10000 // protect from infinite loops in commands
-    })), Promise.resolve());
+    })), _Promise.resolve());
   }
 
   /**
@@ -102,7 +103,7 @@ export default class Runner {
    * @return {Promise}
    */
   execute(command, { timeout, cwd } = {}) {
-    return new Promise((resolve, reject) => exec(command, {
+    return new _Promise((resolve, reject) => exec(command, {
       cwd,
       timeout
     }, (error, stdout, stderr) => {

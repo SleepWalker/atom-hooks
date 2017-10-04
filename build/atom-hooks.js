@@ -1,5 +1,7 @@
 'use babel';
 
+import _JSON$stringify from 'babel-runtime/core-js/json/stringify';
+
 import { CompositeDisposable } from 'atom';
 import HooksListView from './views/HooksListView';
 import StatusView from './views/StatusView';
@@ -34,7 +36,7 @@ export default {
 
     this.subscriptions.add(atom.config.observe('atom-hooks', () => this.readConfig()));
 
-    this.subscriptions.add(atom.workspace.getCenter().observeActivePaneItem(item => this.onChangeActivePane(item)));
+    this.subscriptions.add(atom.workspace.getCenter().observeActivePaneItem(() => this.onChangeActivePane()));
 
     this.subscriptions.add(atom.workspace.observeTextEditors(textEditor => this.subscriptions.add(textEditor.onDidSave(event => this.onSaveFile(event.path)))));
   },
@@ -47,9 +49,13 @@ export default {
   },
 
   getCurrentFile() {
-    const editor = atom.workspace.getActivePaneItem();
+    const editor = atom.workspace.getActiveTextEditor();
 
-    return editor.buffer.file.path;
+    if (editor) {
+      return editor.getPath();
+    }
+
+    return null;
   },
 
   consumeStatusBar(statusBar) {
@@ -61,11 +67,11 @@ export default {
     this.statusView.hide(); // do not show till the text editor will be active
   },
 
-  onChangeActivePane(item) {
-    if (!atom.workspace.isTextEditor(item) || this.config.listHooks(this.getCurrentFile()).length === 0) {
-      this.statusView.hide();
-    } else {
+  onChangeActivePane() {
+    if (this.getCurrentFile() && this.config.listHooks(this.getCurrentFile()).length) {
       this.statusView.show();
+    } else {
+      this.statusView.hide();
     }
   },
 
@@ -95,7 +101,7 @@ export default {
 
   notifyError(message, detail) {
     atom.notifications.addError(message, {
-      detail: typeof detail === 'object' ? JSON.stringify(detail, null, 2) : detail,
+      detail: typeof detail === 'object' ? _JSON$stringify(detail, null, 2) : detail,
       dismissable: true
     });
   },

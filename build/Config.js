@@ -1,5 +1,8 @@
 'use babel';
 
+import _Object$keys from 'babel-runtime/core-js/object/keys';
+import _Object$entries from 'babel-runtime/core-js/object/entries';
+
 import minimatch from 'minimatch';
 
 const supportedHooks = ['onSave', 'manual'];
@@ -17,7 +20,7 @@ export default class Config {
     const hookCommands = this.hooks[hook] || {};
 
     const matchCommands = (commands, patternPrefix = '') => {
-      return Object.entries(commands).reduce((acc, [pattern, commands]) => {
+      return _Object$entries(commands).reduce((acc, [pattern, commands]) => {
         if (minimatch(filePath, patternPrefix + pattern, { dot: true })) {
           commands.forEach(command => acc.push(command));
         }
@@ -37,7 +40,7 @@ export default class Config {
    * @return {Array<{ name: Hook, command: string }}
    */
   listHooks(filePath) {
-    return Object.keys(this.hooks).map(hook => this.getCommands(filePath, hook).map(command => ({
+    return _Object$keys(this.hooks).map(hook => this.getCommands(filePath, hook).map(command => ({
       name: hook,
       command
     }))).reduce((arr1, arr2) => arr1.concat(arr2));
@@ -90,7 +93,7 @@ export default class Config {
         addHookCommand(hook, pattern, command);
       } else if (typeof command === 'object') {
         // nested path patterns. Matching the next level
-        Object.entries(command).forEach(([nestedPattern, cmd]) => {
+        _Object$entries(command).forEach(([nestedPattern, cmd]) => {
           addHookCommand(hook, [pattern, nestedPattern].join('/'), cmd);
         });
       } else {
@@ -99,16 +102,16 @@ export default class Config {
     };
 
     if (typeof config.hooks === 'object') {
-      Object.entries(config.hooks).forEach(([hook, commands]) => {
-        Object.entries(commands).forEach(([pattern, command]) => {
+      _Object$entries(config.hooks).forEach(([hook, commands]) => {
+        _Object$entries(commands).forEach(([pattern, command]) => {
           processCommand(hook, pattern, command);
         });
       });
     }
 
     if (typeof config.files === 'object') {
-      Object.entries(config.files).forEach(([pattern, hookMap]) => {
-        Object.entries(hookMap).forEach(([hook, command]) => {
+      _Object$entries(config.files).forEach(([pattern, hookMap]) => {
+        _Object$entries(hookMap).forEach(([hook, command]) => {
           processCommand(hook, pattern, command);
         });
       });
