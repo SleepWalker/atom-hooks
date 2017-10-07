@@ -21,3 +21,10 @@ clone_depth: 10
 skip_tags: true
 test: off
 deploy: off
+
+notifications:
+  - provider: Webhook
+    url: https://hooks.aethonan.pro/appveyor/137929032/
+    on_build_success: true
+    on_build_failure: true
+    on_build_status_changed: true
