@@ -5,7 +5,11 @@ import { runCLI } from 'jest-cli';
 export default function runTests({ logFile, testPaths }) {
   return runCLI(
     {
-      cache: false, // without this it will fail on oniguruma package (https://github.com/facebook/jest/issues/3552)
+      // force workers > 1 and disabling cache
+      // without this it will fail on oniguruma package
+      // @see https://github.com/facebook/jest/issues/3552
+      cache: false,
+      maxWorkers: 2,
       _: testPaths,
       outputFile: logFile
     },
