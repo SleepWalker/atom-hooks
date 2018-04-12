@@ -34,10 +34,13 @@ export default {
 
     this.subscriptions.add(atom.commands.add('atom-text-editor', 'atom-hooks:show', () => this.onToggleHooksList()));
 
+    // reload our config when it is modified
     this.subscriptions.add(atom.config.observe('atom-hooks', () => this.readConfig()));
 
+    // check for available hooks every time user switches tab
     this.subscriptions.add(atom.workspace.getCenter().observeActivePaneItem(() => this.onChangeActivePane()));
 
+    // onSave hook
     this.subscriptions.add(atom.workspace.observeTextEditors(textEditor => this.subscriptions.add(textEditor.onDidSave(event => this.onSaveFile(event.path)))));
   },
 
@@ -49,10 +52,10 @@ export default {
   },
 
   getCurrentFile() {
-    const editor = atom.workspace.getActiveTextEditor();
+    const paneItem = atom.workspace.getActivePaneItem();
 
-    if (editor) {
-      return editor.getPath();
+    if (paneItem && paneItem.getPath) {
+      return paneItem.getPath();
     }
 
     return null;

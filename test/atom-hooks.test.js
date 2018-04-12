@@ -6,7 +6,7 @@ describe('#getCurrentFile()', () => {
   beforeEach(() => {
     global.atom = {
       workspace: {
-        getActiveTextEditor: jest.fn()
+        getActivePaneItem: jest.fn()
       }
     };
   });
@@ -17,7 +17,7 @@ describe('#getCurrentFile()', () => {
 
   it('should return file path', () => {
     const expectedPath = '/foo/bar.js';
-    atom.workspace.getActiveTextEditor.mockReturnValue({
+    atom.workspace.getActivePaneItem.mockReturnValue({
       getPath: () => expectedPath
     });
 
