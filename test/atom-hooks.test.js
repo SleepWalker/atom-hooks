@@ -3,10 +3,16 @@
 import atomHooks from '../lib/atom-hooks';
 
 describe('#getCurrentFile()', () => {
+  let api;
+
   beforeEach(() => {
+    api = {
+      getActivePaneItem: jest.fn()
+    };
+
     global.atom = {
       workspace: {
-        getActivePaneItem: jest.fn()
+        getCenter: () => api
       }
     };
   });
@@ -17,7 +23,7 @@ describe('#getCurrentFile()', () => {
 
   it('should return file path', () => {
     const expectedPath = '/foo/bar.js';
-    atom.workspace.getActivePaneItem.mockReturnValue({
+    api.getActivePaneItem.mockReturnValue({
       getPath: () => expectedPath
     });
 
