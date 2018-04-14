@@ -4,15 +4,11 @@ import SelectListView from 'atom-select-list';
 
 export default class HooksListView {
 
-  constructor({
-    listHooks,
-    runCommand
-  }) {
-    this.listHooks = listHooks;
+  constructor({ runCommand }) {
     this.runCommand = runCommand;
   }
 
-  toggle() {
+  show(filePath, hooks) {
     if (!this.listView) {
       this.listView = new SelectListView({
         items: [],
@@ -22,7 +18,7 @@ export default class HooksListView {
           return li;
         },
         didConfirmSelection: item => {
-          this.runCommand(item.command);
+          this.runCommand(this.filePath, item.command);
           this.destroyPanel();
         },
         didCancelSelection: () => {
@@ -31,8 +27,10 @@ export default class HooksListView {
       });
     }
 
+    this.filePath = filePath;
     this.listView.update({
-      items: this.listHooks()
+      infoMessage: filePath,
+      items: hooks
     });
 
     if (!this.panel) {

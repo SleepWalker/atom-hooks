@@ -69,7 +69,7 @@ export default class StatusView {
   onListHooks(event) {
     event.preventDefault();
 
-    atom.commands.dispatch(atom.workspace.getActiveTextEditor().element, 'atom-hooks:show');
+    atom.commands.dispatch(atom.workspace.getCenter().getActivePaneItem().element, 'atom-hooks:show');
   }
 
   getElement() {

@@ -4,6 +4,7 @@ import _extends from 'babel-runtime/helpers/extends';
 import _Promise from 'babel-runtime/core-js/promise';
 
 import { parse as parsePath } from 'path';
+import { lstatSync } from 'fs';
 import { exec } from 'child_process';
 
 
@@ -18,14 +19,14 @@ export default class Runner {
   }
 
   /**
-   * Runs an array of commands on file
+   * Runs hook on file
    *
    * @param {string} filePath
    * @param {string} hook
    *
    * @return {Promise<void>}
    */
-  run(filePath, hook) {
+  runHook(filePath, hook) {
     const commands = this.config.getCommands(filePath, hook);
     const vars = this.getVars(filePath);
 
@@ -60,6 +61,7 @@ export default class Runner {
    *   project: '/home/user',
    *   root: '/',
    *   path: '/home/user/dir/file.txt',
+   *   relative: 'dir/file.txt',
    *   dir: '/home/user/dir',
    *   base: 'file.txt',
    *   ext: '.txt',
@@ -71,12 +73,18 @@ export default class Runner {
    * @return {Object}
    */
   getVars(filePath) {
-    const [projectPath] = atom.project.relativizePath(filePath);
+    const [projectPath, relativePath] = atom.project.relativizePath(filePath);
     const pathParts = parsePath(filePath);
+
+    if (lstatSync(filePath).isDirectory()) {
+      pathParts.name = pathParts.name + pathParts.ext;
+      pathParts.ext = '';
+    }
 
     return _extends({
       project: projectPath || pathParts.dir,
-      path: filePath
+      path: filePath,
+      relative: projectPath ? relativePath : pathParts.base
     }, pathParts);
   }
 
