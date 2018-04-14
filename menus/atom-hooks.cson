@@ -1,0 +1,5 @@
+'context-menu':
+  '.tree-view [data-path]': [
+    { label: 'Atom Hooks', command: 'atom-hooks:show'}
+    { type: 'separator' }
+  ]

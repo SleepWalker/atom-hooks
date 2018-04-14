@@ -1,10 +1,12 @@
 'use babel';
 // @flow
 import { exec } from 'child_process';
+import { lstatSync } from 'fs';
 import Runner from '../lib/Runner';
 import Config from '../lib/Config';
 
 jest.mock('child_process');
+jest.mock('fs');
 
 beforeEach(() => {
   global.atom = {
@@ -12,6 +14,10 @@ beforeEach(() => {
       relativizePath: jest.fn().mockReturnValue([null, ''])
     }
   };
+
+  lstatSync.mockReturnValue({
+    isDirectory: () => false
+  });
 });
 
 afterEach(() => {
@@ -68,6 +74,32 @@ describe('#getVars', () => {
       base: 'file.js',
       ext: '.js',
       name: 'file'
+    });
+  });
+
+  it('should extract vars from dir path', () => {
+    const runner = new Runner({
+      config: new Config()
+    });
+    atom.project.relativizePath.mockReturnValue([
+      '/path/to/the/project',
+      'src/some.dir'
+    ]);
+    lstatSync.mockReturnValue({
+      isDirectory: () => true
+    });
+
+    const result = runner.getVars('/path/to/the/project/src/some.dir');
+
+    expect(result).toEqual({
+      project: '/path/to/the/project',
+      root: '/',
+      path: '/path/to/the/project/src/some.dir',
+      relative: 'src/some.dir',
+      dir: '/path/to/the/project/src',
+      base: 'some.dir',
+      ext: '',
+      name: 'some.dir'
     });
   });
 });
@@ -163,7 +195,7 @@ describe('#run()', () => {
       })
     );
 
-    return runner.run(expectedFilePath, 'onSave');
+    return runner.runHook(expectedFilePath, 'onSave');
   });
 
   it('rejects if one of commands have failed', () => {
@@ -194,7 +226,7 @@ describe('#run()', () => {
     );
 
     return runner
-      .run(expectedFilePath, 'onSave')
+      .runHook(expectedFilePath, 'onSave')
       .catch(() => expect(exec.mock.calls.length).toBe(1));
   });
 });
