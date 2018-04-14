@@ -58,12 +58,6 @@ describe('#onChangeActivePane()', () => {
     }: any);
   });
 
-  afterEach(() => {
-    getCurrentFile.mockRestore();
-    atomHooks.statusView = null;
-    atomHooks.config = null;
-  });
-
   it('should show status view', () => {
     const expectedPath = '/foo/bar.js';
 
