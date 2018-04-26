@@ -73,6 +73,8 @@ export default class Runner {
    * @return {Object}
    */
   getVars(filePath) {
+    filePath = filePath.replace(/\/+$/, '');
+
     const [projectPath, relativePath] = atom.project.relativizePath(filePath);
     const pathParts = parsePath(filePath);
 
