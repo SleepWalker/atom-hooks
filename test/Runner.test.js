@@ -102,6 +102,25 @@ describe('#getVars', () => {
       name: 'some.dir'
     });
   });
+
+  it('should remove trailing slashed from dirs', () => {
+    const runner = new Runner({
+      config: new Config()
+    });
+
+    const result = runner.getVars('/some/path/to/dir/');
+
+    expect(result).toEqual({
+      project: '/some/path/to',
+      root: '/',
+      path: '/some/path/to/dir',
+      relative: 'dir',
+      dir: '/some/path/to',
+      base: 'dir',
+      ext: '',
+      name: 'dir'
+    });
+  });
 });
 
 describe('#execute()', () => {
