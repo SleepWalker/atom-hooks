@@ -30,7 +30,7 @@ export default class Runner {
     const commands = this.config.getCommands(filePath, hook);
     const vars = this.getVars(filePath);
 
-    return commands.reduce((promise, command) => promise.then(() => this.execute(this.interpolate(command, vars), {
+    return commands.reduce((promise, command) => promise.then(() => this.execute(this.buildCommand(command, filePath), {
       cwd: vars.project,
       timeout: 10000 // protect from infinite loops in commands
     })), _Promise.resolve());
@@ -51,6 +51,12 @@ export default class Runner {
       cwd: vars.project,
       timeout: 10000 // protect from infinite loops in commands
     });
+  }
+
+  buildCommand(command, filePath) {
+    const vars = this.getVars(filePath);
+
+    return this.interpolate(command, vars);
   }
 
   /**
@@ -113,6 +119,8 @@ export default class Runner {
    * @return {Promise}
    */
   execute(command, { timeout, cwd } = {}) {
+    console.log(`atom-hooks: executing ${command}`);
+
     return new _Promise((resolve, reject) => exec(command, {
       cwd,
       timeout

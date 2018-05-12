@@ -1,8 +1,10 @@
 'use babel';
 
 import _JSON$stringify from 'babel-runtime/core-js/json/stringify';
+import _extends from 'babel-runtime/helpers/extends';
 
 import { CompositeDisposable } from 'atom';
+
 import HooksListView from './views/HooksListView';
 import StatusView from './views/StatusView';
 import Config from './Config';
@@ -15,6 +17,9 @@ class AtomHooks {
     this.config = new Config();
     this.runner = new Runner({ config: this.config });
     this.statusView = new StatusView();
+    this.hooksListView = new HooksListView({
+      runCommand: (filePath, command) => this.processExecutionResult(this.runner.runCommand(filePath, command))
+    });
 
     if (!atom.config.get('atom-hooks')) {
       atom.config.set('atom-hooks', {
@@ -67,7 +72,7 @@ class AtomHooks {
       priority: 100
     });
 
-    this.statusView.hide(); // do not show till the text editor will be active
+    this.onChangeActivePane();
   }
 
   onChangeActivePane() {
@@ -80,17 +85,17 @@ class AtomHooks {
     }
   }
 
-  onToggleHooksList(filePath) {
-    if (!this.hooksListView) {
-      this.hooksListView = new HooksListView({
-        runCommand: (filePath, command) => this.processExecutionResult(this.runner.runCommand(filePath, command))
-      });
-    }
-
-    filePath = filePath || this.getCurrentFile();
+  onToggleHooksList(customFilePath) {
+    const filePath = customFilePath || this.getCurrentFile();
 
     if (filePath) {
-      this.hooksListView.show(filePath, this.config.listHooks(filePath));
+      const availableHooks = this.config.listHooks(filePath).map(hook => {
+        return _extends({}, hook, {
+          interpolated: this.runner.buildCommand(hook.command, filePath)
+        });
+      });
+
+      this.hooksListView.show(filePath, availableHooks);
     }
   }
 
