@@ -34,6 +34,7 @@ If you are working with remote server, you probably need a way to upload changed
 "*":
   "atom-hooks":
     hooks:
+      onSave:
         "~/path/to/project/**": "rsync -rltvzR -e ssh ${project}/./${relative} user@host:~/path/to/remote/project"
 ```
 
